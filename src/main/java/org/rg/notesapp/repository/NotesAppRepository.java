@@ -3,20 +3,21 @@
  */
 package org.rg.notesapp.repository;
 
-import java.util.List;
-
 import org.rg.notesapp.model.Note;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * @author RG
  *
  */
-public interface NotesAppRepository extends CrudRepository<Note, Long>, JpaSpecificationExecutor<Note> {
+public interface NotesAppRepository extends PagingAndSortingRepository<Note, Long>, JpaSpecificationExecutor<Note>{
 
-	List<Note> findByTitle(String titleName);
+	Page<Note> findByTitle(String titleName, Pageable pageable);
 	
-	List<Note> findBycreatedBy(String createdBy);
+	Slice<Note> findBycreatedBy(String createdBy, Pageable pageable);
 	
 }

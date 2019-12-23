@@ -3,8 +3,6 @@
  */
 package org.rg.notesapp.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -12,6 +10,9 @@ import javax.persistence.EntityNotFoundException;
 import org.rg.notesapp.model.Note;
 import org.rg.notesapp.repository.NotesAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,20 +40,20 @@ public class NotesAppServiceImpl implements NotesAppService {
 	}
 
 	@Override
-	public List<Note> getAllNotes() {
+	public Page<Note> getAllNotes(Pageable pageable) {
 		// TODO Auto-generated method stub
-		List<Note> allNotes = new ArrayList<Note>();
-		allNotes = (List<Note>) notesAppRepo.findAll();
+		Page<Note> allNotes;
+		allNotes = notesAppRepo.findAll(pageable);
 		if (allNotes == null)
 			throw new EntityNotFoundException("No notes found");
 		return allNotes;
 	}
 
 	@Override
-	public List<Note> getNoteByTitle(String titleName) {
+	public Page<Note> getNoteByTitle(String titleName, Pageable pageable) {
 		// TODO Auto-generated method stub
-		List<Note> noteByTitle = new ArrayList<Note>();
-		noteByTitle = notesAppRepo.findByTitle(titleName);
+		Page<Note> noteByTitle;
+		noteByTitle = notesAppRepo.findByTitle(titleName, pageable);
 		if (noteByTitle == null)
 			throw new org.rg.notesapp.apierrors.EntityNotFoundException(Note.class, "title", titleName);
 		return noteByTitle;
@@ -111,10 +112,10 @@ public class NotesAppServiceImpl implements NotesAppService {
 	}
 
 	@Override
-	public List<Note> getNoteByUser(String userName) {
+	public Slice<Note> getNoteByUser(String userName, Pageable pageable) {
 		// TODO Auto-generated method stub
-		List<Note> noteByUser = new ArrayList<Note>();
-		noteByUser = notesAppRepo.findBycreatedBy(userName);
+		Slice<Note> noteByUser;
+		noteByUser = notesAppRepo.findBycreatedBy(userName, pageable);
 		if (noteByUser == null)
 			throw new org.rg.notesapp.apierrors.EntityNotFoundException(Note.class, "Username", userName);
 		return noteByUser;
@@ -125,7 +126,7 @@ public class NotesAppServiceImpl implements NotesAppService {
 		// TODO Auto-generated method stub
 		Note noteById = new Note();
 		noteById = notesAppRepo.findById(id).get();
-		if(noteById == null)
+		if (noteById == null)
 			throw new org.rg.notesapp.apierrors.EntityNotFoundException(Note.class, "id", id.toString());
 		return noteById;
 	}
